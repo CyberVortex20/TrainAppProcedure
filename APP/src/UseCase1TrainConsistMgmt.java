@@ -1,12 +1,25 @@
+import java.util.Arrays;
 import java.util.Scanner;
 
-public class UC18 {
+public class UC19 {
 
-    public static boolean linearSearch(String[] bogieIds, String key) {
+    public static boolean binarySearch(String[] arr, String key) {
 
-        for (int i = 0; i < bogieIds.length; i++) {
-            if (bogieIds[i].equals(key)) {
+        int low = 0;
+        int high = arr.length - 1;
+
+        while (low <= high) {
+
+            int mid = (low + high) / 2;
+
+            int result = key.compareTo(arr[mid]);
+
+            if (result == 0) {
                 return true;
+            } else if (result > 0) {
+                low = mid + 1;
+            } else {
+                high = mid - 1;
             }
         }
 
@@ -16,18 +29,20 @@ public class UC18 {
     public static void main(String[] args) {
 
         String[] bogieIds = {
-                "BG101",
-                "BG205",
                 "BG309",
-                "BG412",
-                "BG550"
+                "BG101",
+                "BG550",
+                "BG205",
+                "BG412"
         };
+
+        Arrays.sort(bogieIds);
 
         Scanner sc = new Scanner(System.in);
 
-        String searchKey = sc.nextLine();
+        String key = sc.nextLine();
 
-        boolean found = linearSearch(bogieIds, searchKey);
+        boolean found = binarySearch(bogieIds, key);
 
         if (found) {
             System.out.println("Bogie Found");
