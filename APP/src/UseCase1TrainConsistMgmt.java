@@ -1,46 +1,34 @@
-class CargoSafetyException extends RuntimeException {
-    CargoSafetyException(String message) {
-        super(message);
-    }
-}
+public class UC16 {
 
-class GoodsBogie {
-    String shape;
-    String cargo;
+    public static void bubbleSort(int[] capacities) {
+        int n = capacities.length;
 
-    GoodsBogie(String shape) {
-        this.shape = shape;
-    }
+        for (int i = 0; i < n - 1; i++) {
+            boolean swapped = false;
 
-    void assignCargo(String cargo) {
-        try {
-            if (shape.equals("Rectangular") && cargo.equals("Petroleum")) {
-                throw new CargoSafetyException("Unsafe cargo assignment: Petroleum cannot be placed in Rectangular bogie");
+            for (int j = 0; j < n - i - 1; j++) {
+                if (capacities[j] > capacities[j + 1]) {
+                    int temp = capacities[j];
+                    capacities[j] = capacities[j + 1];
+                    capacities[j + 1] = temp;
+                    swapped = true;
+                }
             }
-            this.cargo = cargo;
-            System.out.println("Cargo assigned: " + cargo + " to " + shape);
-        } catch (CargoSafetyException e) {
-            System.out.println(e.getMessage());
-        } finally {
-            System.out.println("Cargo assignment process completed for " + shape);
+
+            if (!swapped) {
+                break;
+            }
         }
     }
 
-    String getCargo() {
-        return cargo;
-    }
-}
-
-public class UC15 {
     public static void main(String[] args) {
 
-        GoodsBogie b1 = new GoodsBogie("Cylindrical");
-        b1.assignCargo("Petroleum");
+        int[] capacities = {72, 56, 24, 70, 60};
 
-        GoodsBogie b2 = new GoodsBogie("Rectangular");
-        b2.assignCargo("Petroleum");
+        bubbleSort(capacities);
 
-        GoodsBogie b3 = new GoodsBogie("Rectangular");
-        b3.assignCargo("Coal");
+        for (int i = 0; i < capacities.length; i++) {
+            System.out.println(capacities[i]);
+        }
     }
 }
