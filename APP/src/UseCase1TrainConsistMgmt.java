@@ -1,57 +1,52 @@
-import java.util.*;
-import java.util.stream.*;
+class InvalidCapacityException extends Exception {
+    InvalidCapacityException(String message) {
+        super(message);
+    }
+}
 
-public class UC13PerformanceComparision {
+class PassengerBogie {
+    String type;
+    int capacity;
 
-    static class Bogie {
-        int capacity;
-
-        Bogie(int capacity) {
-            this.capacity = capacity;
+    PassengerBogie(String type, int capacity) throws InvalidCapacityException {
+        if (capacity <= 0) {
+            throw new InvalidCapacityException("Capacity must be greater than zero");
         }
-
-        int getCapacity() {
-            return capacity;
-        }
+        this.type = type;
+        this.capacity = capacity;
     }
 
-    public static List<Bogie> loopFilter(List<Bogie> bogies) {
-        List<Bogie> result = new ArrayList<>();
-        for (Bogie b : bogies) {
-            if (b.getCapacity() > 60) {
-                result.add(b);
-            }
-        }
-        return result;
+    String getType() {
+        return type;
     }
 
-    public static List<Bogie> streamFilter(List<Bogie> bogies) {
-        return bogies.stream()
-                .filter(b -> b.getCapacity() > 60)
-                .collect(Collectors.toList());
+    int getCapacity() {
+        return capacity;
     }
+}
 
+public class UC14 {
     public static void main(String[] args) {
 
-        List<Bogie> bogies = new ArrayList<>();
-
-        for (int i = 1; i <= 10000; i++) {
-            bogies.add(new Bogie(i % 100));
+        try {
+            PassengerBogie b1 = new PassengerBogie("Sleeper", 40);
+            System.out.println(b1.getType() + " " + b1.getCapacity());
+        } catch (InvalidCapacityException e) {
+            System.out.println(e.getMessage());
         }
 
-        long startLoop = System.nanoTime();
-        List<Bogie> loopResult = loopFilter(bogies);
-        long endLoop = System.nanoTime();
-        long loopTime = endLoop - startLoop;
+        try {
+            PassengerBogie b2 = new PassengerBogie("AC Chair", -5);
+            System.out.println(b2.getType() + " " + b2.getCapacity());
+        } catch (InvalidCapacityException e) {
+            System.out.println(e.getMessage());
+        }
 
-        long startStream = System.nanoTime();
-        List<Bogie> streamResult = streamFilter(bogies);
-        long endStream = System.nanoTime();
-        long streamTime = endStream - startStream;
-
-        System.out.println(loopResult.size());
-        System.out.println(streamResult.size());
-        System.out.println(loopTime);
-        System.out.println(streamTime);
+        try {
+            PassengerBogie b3 = new PassengerBogie("First Class", 0);
+            System.out.println(b3.getType() + " " + b3.getCapacity());
+        } catch (InvalidCapacityException e) {
+            System.out.println(e.getMessage());
+        }
     }
 }
