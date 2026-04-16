@@ -1,47 +1,57 @@
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.*;
 
-class GoodsBogie {
-    String type;
-    String cargo;
+public class UC13PerformanceComparision {
 
-    GoodsBogie(String type, String cargo) {
-        this.type = type;
-        this.cargo = cargo;
-    }
+    static class Bogie {
+        int capacity;
 
-    @Override
-    public String toString() {
-        return "GoodsBogie{Type='" + type + "', Cargo='" + cargo + "'}";
-    }
-}
-
-public class UC12SafetyComplianceCheck {
-    public static void main(String[] args) {
-        List<GoodsBogie> goodsConsist = new ArrayList<>();
-
-        goodsConsist.add(new GoodsBogie("Rectangular", "Coal"));
-        goodsConsist.add(new GoodsBogie("Cylindrical", "Petroleum"));
-        goodsConsist.add(new GoodsBogie("Rectangular", "Grain"));
-        goodsConsist.add(new GoodsBogie("Cylindrical", "Petroleum"));
-
-        boolean isSafetyCompliant = goodsConsist.stream()
-                .allMatch(bogie -> {
-                    if (bogie.type.equals("Cylindrical")) {
-                        return bogie.cargo.equals("Petroleum");
-                    }
-                    return true;
-                });
-
-        System.out.println("--- Train Safety Inspection Report ---");
-        goodsConsist.forEach(System.out::println);
-
-        System.out.println("\nValidation Status: " + (isSafetyCompliant ? "SAFE" : "UNSAFE"));
-
-        if (isSafetyCompliant) {
-            System.out.println("All safety protocols met. Train is cleared for departure.");
-        } else {
-            System.out.println("SAFETY ALERT: Invalid cargo detected in cylindrical bogie!");
+        Bogie(int capacity) {
+            this.capacity = capacity;
         }
+
+        int getCapacity() {
+            return capacity;
+        }
+    }
+
+    public static List<Bogie> loopFilter(List<Bogie> bogies) {
+        List<Bogie> result = new ArrayList<>();
+        for (Bogie b : bogies) {
+            if (b.getCapacity() > 60) {
+                result.add(b);
+            }
+        }
+        return result;
+    }
+
+    public static List<Bogie> streamFilter(List<Bogie> bogies) {
+        return bogies.stream()
+                .filter(b -> b.getCapacity() > 60)
+                .collect(Collectors.toList());
+    }
+
+    public static void main(String[] args) {
+
+        List<Bogie> bogies = new ArrayList<>();
+
+        for (int i = 1; i <= 10000; i++) {
+            bogies.add(new Bogie(i % 100));
+        }
+
+        long startLoop = System.nanoTime();
+        List<Bogie> loopResult = loopFilter(bogies);
+        long endLoop = System.nanoTime();
+        long loopTime = endLoop - startLoop;
+
+        long startStream = System.nanoTime();
+        List<Bogie> streamResult = streamFilter(bogies);
+        long endStream = System.nanoTime();
+        long streamTime = endStream - startStream;
+
+        System.out.println(loopResult.size());
+        System.out.println(streamResult.size());
+        System.out.println(loopTime);
+        System.out.println(streamTime);
     }
 }
